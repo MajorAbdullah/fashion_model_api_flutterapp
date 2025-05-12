@@ -1,10 +1,7 @@
 import 'package:flutter/material.dart';
 import '../models/question.dart';
 import '../services/api_service.dart';
-import '../services/storage_service.dart';
-import '../models/user_preferences_model.dart';
 import '../widgets/question_widget.dart';
-import 'choice_screen.dart';
 import 'results_screen.dart';
 
 class QuestionnaireScreen extends StatefulWidget {
@@ -16,6 +13,7 @@ class QuestionnaireScreen extends StatefulWidget {
 
 class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
   final ApiService _apiService = ApiService();
+  // final StorageService _storageService = StorageService();
   final Map<String, dynamic> _answers = {};
   List<Question> _questions = [];
   bool _isLoading = true;
@@ -97,9 +95,7 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
         curve: Curves.easeInOut,
       );
     }
-  }
-
-  Future<void> _submitAnswers() async {
+  }  Future<void> _submitAnswers() async {
     try {
       setState(() {
         _isLoading = true;
@@ -116,7 +112,7 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
       
       if (!mounted) return;
       
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: (context) => ResultsScreen(responseData: response),
@@ -155,14 +151,24 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
     
     return processed;
   }
-
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Fashion Preferences'),
-        elevation: 0,
-      ),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.of(context).pushReplacementNamed('/');
+        return false;
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Fashion Preferences'),
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              Navigator.of(context).pushReplacementNamed('/');
+            },
+          ),
+        ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : _questions.isEmpty
@@ -223,8 +229,8 @@ class _QuestionnaireScreenState extends State<QuestionnaireScreen> {
                         ],
                       ),
                     ),
-                  ],
-                ),
+                  ],                ),
+      ),
     );
   }
 }

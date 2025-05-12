@@ -20,13 +20,22 @@ class _ChoiceScreenState extends State<ChoiceScreen> {
     super.initState();
     _checkPreviousRecommendations();
   }
-
   Future<void> _checkPreviousRecommendations() async {
-    final hasPrevious = await _storageService.hasPreviousRecommendations();
-    setState(() {
-      _hasPreviousRecommendations = hasPrevious;
-      _isLoading = false;
-    });
+    try {
+      final hasPrevious = await _storageService.hasPreviousRecommendations();
+      setState(() {
+        _hasPreviousRecommendations = hasPrevious;
+        _isLoading = false;
+      });
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+        _hasPreviousRecommendations = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error checking previous data: $e')),
+      );
+    }
   }
 
   void _startNewQuiz() {

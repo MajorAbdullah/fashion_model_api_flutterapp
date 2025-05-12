@@ -34,23 +34,38 @@ class _ResultsScreenState extends State<ResultsScreen> {
       _loadRecommendations();
     }
   }
-
   Future<void> _loadSavedRecommendations() async {
-    if (widget.responseData.containsKey('outfits')) {
-      final outfitsJson = widget.responseData['outfits'];
-      if (outfitsJson is List<OutfitRecommendation>) {
-        setState(() {
-          _outfits = outfitsJson;
-          _isLoading = false;
-        });
+    try {
+      if (widget.responseData.containsKey('outfits')) {
+        final outfitsJson = widget.responseData['outfits'];
+        if (outfitsJson is List<OutfitRecommendation>) {
+          setState(() {
+            _outfits = outfitsJson;
+            _isLoading = false;
+          });
+        } else {
+          // Try to convert the JSON object to OutfitRecommendation objects
+          final recommendations = OutfitRecommendation.fromJsonList(outfitsJson);
+          setState(() {
+            _outfits = recommendations;
+            _isLoading = false;
+          });
+        }
       } else {
         setState(() {
           _isLoading = false;
         });
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Error loading saved recommendations')),
+          const SnackBar(content: Text('No recommendation data available')),
         );
       }
+    } catch (e) {
+      setState(() {
+        _isLoading = false;
+      });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error loading saved recommendations: $e')),
+      );
     }
   }
 

@@ -67,7 +67,6 @@ class StorageService {
       return null;
     }
   }
-
   // Check if user has previous recommendations
   Future<bool> hasPreviousRecommendations() async {
     try {
@@ -75,6 +74,19 @@ class StorageService {
       return prefs.containsKey(recommendationsKey);
     } catch (e) {
       print('Error checking previous recommendations: $e');
+      return false;
+    }
+  }
+  
+  // Clear all stored data (for testing or reset)
+  Future<bool> clearAllData() async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.remove(userPreferencesKey);
+      await prefs.remove(recommendationsKey);
+      return true;
+    } catch (e) {
+      print('Error clearing data: $e');
       return false;
     }
   }

@@ -5,13 +5,18 @@ class OutfitDetailsScreen extends StatelessWidget {
   final OutfitRecommendation outfit;
 
   const OutfitDetailsScreen({Key? key, required this.outfit}) : super(key: key);
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Outfit ${outfit.outfitNumber} Details'),
         elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
       ),
       body: SingleChildScrollView(
         child: Padding(

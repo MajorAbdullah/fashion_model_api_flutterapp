@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'screens/choice_screen.dart';
 import 'screens/questionnaire_screen.dart';
 
 void main() {
@@ -27,7 +28,7 @@ class MyApp extends StatelessWidget {
           centerTitle: true,
         ),
       ),
-      home: const WelcomeScreen(),
+      home: const ChoiceScreen(),
     );
   }
 }
